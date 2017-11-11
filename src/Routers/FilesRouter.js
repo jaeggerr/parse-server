@@ -34,6 +34,12 @@ export class FilesRouter {
   }
 
   getHandler(req, res) {
+    if (canPerformFileOperation(req.auth.user, req.auth.user.isMaster, req.config.filesPolicy, 'read')) {
+      next(new Parse.Error(Parse.Error.OPERATION_FORBIDDEN,
+        'You don\'t have the permissions to read files.'));
+      return;
+    }
+
     const config = Config.get(req.params.appId);
     const filesController = config.filesController;
     const filename = req.params.filename;
@@ -61,6 +67,12 @@ export class FilesRouter {
   }
 
   createHandler(req, res, next) {
+    if (canPerformFileOperation(req.auth.user, req.auth.user.isMaster, req.config.filesPolicy, 'create')) {
+      next(new Parse.Error(Parse.Error.OPERATION_FORBIDDEN,
+        'You don\'t have the permissions to create files.'));
+      return;
+    }
+
     if (!req.body || !req.body.length) {
       next(new Parse.Error(Parse.Error.FILE_SAVE_ERROR,
         'Invalid file upload.'));
@@ -182,4 +194,18 @@ function handleFileStream(stream, req, res, contentType) {
       }
     });
   });
+}
+
+function canPerformFileOperation(isUser, isMaster, policy, operation) {
+  if (!policy || isMaster) return true; // No policy grants permissions. Master always have permissions.
+  if (policy === 'anonymous') return true;
+  if (isUser && policy === 'user') return true;
+
+  else if (typeof policy === 'object') {
+    if (policy.operation) {
+      if (policy === 'anonymous') return true;
+      if (isUser && policy === 'user') return true;
+    }
+  }
+  return false;
 }

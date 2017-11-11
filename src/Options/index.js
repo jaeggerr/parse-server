@@ -1,6 +1,7 @@
 // @flow
 type Adapter = string|any;
 type NumberOrBoolean = number|boolean;
+type FilesPolicy = string|any;
 
 export interface ParseServerOptions {
   /* Your Parse Application ID
@@ -131,6 +132,8 @@ export interface ParseServerOptions {
   startLiveQueryServer: ?boolean;
   /* Live query server configuration options (will start the liveQuery server) */
   liveQueryServerOptions: ?LiveQueryServerOptions;
+  /* Permissions policy to read and write files */
+  filesPolicy: ?FilesPolicy;
 
   __indexBuildCompletionCallbackForTests: ?()=>void;
 }

@@ -227,6 +227,7 @@ The client keys used with Parse are no longer necessary with Parse Server. If yo
 * `middleware` - (CLI only), a module name, function that is an express middleware. When using the CLI, the express app will load it just **before** mounting parse-server on the mount path. This option is useful for injecting a monitoring middleware.
 * `masterKeyIps` - The array of ip addresses where masterKey usage will be restricted to only these ips. (Default to [] which means allow all ips). If you're using this feature and have `useMasterKey: true` in cloudcode, make sure that you put your own ip in this list.
 * `readOnlyMasterKey` -  A masterKey that has full read access to the data, but no write access. This key should be treated the same way as your masterKey, keeping it private.
+* `filesPolicy` - A string or a JSON object definig the minimum type type of users having permissions to read and write files. Possible values are `anonymous` for anonymous users and `user` for registered users. Master always has read and write permissions. It is also possible define `read` and `create` permissions independently.
 
 ##### Logging
 
@@ -304,6 +305,30 @@ var server = ParseServer({
   }
 });
 ```
+
+##### Files permissions policies
+
+Set global permissions for all operations.
+Possible values are `all`, `user` or `master`.
+
+```json
+  {
+    filesPolicy: "user"
+  }
+```
+
+Set permissions for read and create operations.
+Possible values are `all`, `user` or `master`.
+
+```json
+  {
+    filesPolicy: {
+      "read": "anonymous",
+      "create": "user"
+    }
+  }
+```
+
 
 You can also use other email adapters contributed by the community such as:
 - [parse-server-postmark-adapter](https://www.npmjs.com/package/parse-server-postmark-adapter)
