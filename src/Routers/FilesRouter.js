@@ -204,7 +204,7 @@ function canPerformFileOperation(isUser, isMaster, policy, operation) {
   else if (typeof policy === 'object') {
     if (policy[operation]) {
       if (policy[operation] === 'anonymous') return true;
-      if (policy[operation] && policy === 'user') return true;
+      if (isUser && policy[operation] === 'user') return true;
     }
   }
   return false;
