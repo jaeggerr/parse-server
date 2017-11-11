@@ -33,7 +33,7 @@ export class FilesRouter {
     return router;
   }
 
-  getHandler(req, res) {
+  getHandler(req, res, next) {
     if (canPerformFileOperation(req.auth.user, req.auth.user.isMaster, req.config.filesPolicy, 'read')) {
       next(new Parse.Error(Parse.Error.OPERATION_FORBIDDEN,
         'You don\'t have the permissions to read files.'));
@@ -202,9 +202,9 @@ function canPerformFileOperation(isUser, isMaster, policy, operation) {
   if (isUser && policy === 'user') return true;
 
   else if (typeof policy === 'object') {
-    if (policy.operation) {
-      if (policy === 'anonymous') return true;
-      if (isUser && policy === 'user') return true;
+    if (policy[operation]) {
+      if (policy[operation] === 'anonymous') return true;
+      if (policy[operation] && policy === 'user') return true;
     }
   }
   return false;
