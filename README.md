@@ -318,7 +318,7 @@ Possible values are `all`, `user` or `master`.
 ```
 
 Set permissions for read and create operations.
-Possible values are `all`, `user` or `master`.
+Possible values are `anonymous` or `user`.
 
 ```json
   {
